@@ -21,12 +21,14 @@ add(
 			if(
 				equals(
 					outputs('DEF'),
-					null),
+					null
+				),
 				0,
 				outputs('DEF')
 			)
 		),
 		outputs('GHI')
-	),outputs('JKL')
+	),
+	outputs('JKL')
 )
 ```
