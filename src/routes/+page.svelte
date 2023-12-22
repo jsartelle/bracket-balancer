@@ -66,41 +66,58 @@
 
 	<label class="input">
 		<span>Input</span>
-		<textarea bind:value={input}></textarea>
+		<div class="grow-wrap" data-textarea-value={input}>
+			<textarea bind:value={input}></textarea>
+		</div>
 	</label>
 
 	<label class="output">
 		<span>Output</span>
-		<div>
-			<button on:click={copyOutput}>{copied ? '✓' : 'Copy'}</button>
+		<div class="grow-wrap" data-textarea-value={output}>
 			<textarea readonly bind:value={output}></textarea>
+			<button on:click={copyOutput}>{copied ? '✓' : 'Copy'}</button>
 		</div>
 	</label>
 </main>
 
-<style>
-	textarea {
-		height: 200px;
-		font-family: monospace;
-		white-space: pre-wrap;
-		resize: vertical;
+<style lang="scss">
+	/* auto-resize the textareas: https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/ */
+	.grow-wrap {
+		position: relative;
+		display: grid;
 	}
 
-	.output {
-		& div {
-			position: relative;
-		}
+	.grow-wrap textarea,
+	.grow-wrap::after {
+		width: 100%;
+		border: var(--border-width) solid var(--border-color);
+		padding: var(--form-element-spacing-vertical) var(--form-element-spacing-horizontal);
+		margin-bottom: var(--spacing);
+		font-family: monospace;
+		white-space: pre-wrap;
+		resize: none;
+		overflow: hidden;
+		grid-area: 1 / 1 / 2 / 2;
+	}
 
-		& button {
-			display: inline;
-			width: auto;
-			position: absolute;
-			top: var(--form-element-spacing-vertical);
-			right: var(--form-element-spacing-horizontal);
-		}
+	.grow-wrap::after {
+		--border-color: transparent;
+		content: attr(data-textarea-value) ' ';
+		visibility: hidden;
+		pointer-events: none;
+	}
 
-		& textarea {
-			height: 800px;
+	.grow-wrap button {
+		display: inline;
+		width: auto;
+		position: absolute;
+		top: var(--form-element-spacing-vertical);
+		right: var(--form-element-spacing-horizontal);
+		opacity: 0.5;
+		transition: 125ms opacity;
+
+		&:hover {
+			opacity: 1;
 		}
 	}
 </style>
