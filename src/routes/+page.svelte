@@ -59,9 +59,11 @@
 		copied = true
 		setTimeout(() => (copied = false), 2000)
 	}
+
+	let charWidth: number
 </script>
 
-<main>
+<main style:--charWidth={charWidth + 'px'}>
 	<h1>Bracket Balancer</h1>
 
 	<label class="input">
@@ -80,7 +82,16 @@
 	</label>
 </main>
 
+<!-- used to measure the width of a monospace character -->
+<div aria-hidden="true" class="char-measure" bind:offsetWidth={charWidth}>a</div>
+
 <style lang="scss">
+	%monospace {
+		font-family: 'Menlo', 'Consolas', 'Roboto Mono', 'Ubuntu Monospace', 'Noto Mono', 'Oxygen Mono',
+			'Liberation Mono', monospace, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+			'Noto Color Emoji';
+	}
+
 	/* auto-resize the textareas: https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/ */
 	.grow-wrap {
 		position: relative;
@@ -89,11 +100,11 @@
 
 	.grow-wrap textarea,
 	.grow-wrap::after {
+		@extend %monospace;
 		width: 100%;
 		border: var(--border-width) solid var(--border-color);
 		padding: var(--form-element-spacing-vertical) var(--form-element-spacing-horizontal);
 		margin-bottom: var(--spacing);
-		font-family: monospace;
 		white-space: pre-wrap;
 		resize: none;
 		overflow: hidden;
@@ -105,6 +116,18 @@
 		content: attr(data-textarea-value) ' ';
 		visibility: hidden;
 		pointer-events: none;
+	}
+
+	.output textarea {
+		background: repeating-linear-gradient(
+			to right,
+			var(--muted-border-color),
+			var(--muted-border-color) 1px,
+			var(--background-color) 1px,
+			var(--background-color) calc(var(--charWidth) * 4 + 1.75px)
+		);
+		background-clip: content-box;
+		background-position: var(--form-element-spacing-horizontal);
 	}
 
 	.grow-wrap button {
@@ -119,5 +142,14 @@
 		&:hover {
 			opacity: 1;
 		}
+	}
+
+	.char-measure {
+		@extend %monospace;
+		position: fixed;
+		left: 0;
+		top: 0;
+		visibility: hidden;
+		pointer-events: none;
 	}
 </style>
